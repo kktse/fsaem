@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from bokeh.models import HoverTool
+from bokeh.models import HoverTool, ColumnDataSource
 from bokeh.charts import Bar
 from bokeh.charts.attributes import cat, color
 from bokeh.charts.operations import blend
@@ -10,7 +10,6 @@ from bokeh.models.widgets import Select, HBox
 from bokeh.palettes import Spectral9, brewer
 
 from functools import lru_cache
-
 import pandas as pd
 
 # Read in the FSAEM data
@@ -43,8 +42,12 @@ def get_data(year):
 def generate_chart(year):
     data = get_data(year)
 
-    barchart = Bar(pd.DataFrame(data),
-                   values='Country',
+    plot_data = {'country': data.index.tolist(),
+                 'count': [float(i) for i in data.values.tolist()]}
+
+    barchart = Bar(plot_data,
+                   label='country',
+                   values='count',
                    color="red",
                    xgrid=False, ygrid=False,
                    plot_width=800, plot_height=500,

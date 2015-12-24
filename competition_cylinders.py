@@ -32,8 +32,24 @@ def get_data():
     selected_data = selected_data.sort_values(by='Engine_Cylinders', ascending=False)
 
     selected_data['Engine_Cylinders'] = ["%d Cylinder" % cylinders for cylinders in selected_data['Engine_Cylinders']]
-    
-    return selected_data
+   
+    # Count everything manually for compatibility with NumPy 1.7.1
+    cylinder_options = selected_data['Engine_Cylinders'].unique()
+    year_column = []
+    size_column = []
+    count_column = []
+    for year in selected_data['Year'].unique():
+        year_data = selected_data.loc[selected_data['Year'] == year]
+        for size in cylinder_options:
+            year_column.append(year)
+            size_column.append(size)
+            count_column.append(year_data['Engine_Cylinders'].loc[year_data['Engine_Cylinders'] == size].count())
+
+    data_table = pd.DataFrame(data={'year': year_column,
+                                    'size': size_column,
+                                    'count': [float(i) for i in count_column]})
+
+    return data_table
 
 def generate_chart():
     data = get_data()
@@ -41,11 +57,10 @@ def generate_chart():
     # Bokeh doesn't let me control the order of the grouping! This is
     # frustrating since it will be different on every server launch
     barchart = Bar(data,
-                   label='Year',
-                   values='Engine_Cylinders',
-                   agg='count',
-                   group=cat(columns='Engine_Cylinders', ascending=True, sort=True),
-                   color=color(columns='Engine_Cylinders', palette=Spectral4),
+                   label='year',
+                   values='count',
+                   group=cat(columns='size', ascending=True, sort=True),
+                   color=color(columns='size', palette=Spectral4),
                    legend='top_left',
                    xgrid=False, ygrid=False,
                    plot_width=800, plot_height=500,
@@ -69,7 +84,7 @@ def generate_chart():
 
     barchart.logo = None
     
-    hover = HoverTool(tooltips=[("Engine", '@Engine_Cylinders'),
+    hover = HoverTool(tooltips=[("Engine", '@size'),
                                 ("# Teams", '@height')])
 
     barchart.add_tools(hover)

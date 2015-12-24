@@ -4,6 +4,7 @@ from bokeh.charts import Histogram
 from bokeh.models import Range1d, FixedTicker, HoverTool
 from bokeh.palettes import Blues9
 from bokeh.plotting import figure, show, output_file
+from bokeh.io import curdoc
 
 import math
 import numpy as np
@@ -28,14 +29,11 @@ binsize = min(acceptable_binsizes, key=lambda x:abs(x-fdrule_binsize))
 # Round minimum total score to nearest binsize-1
 min_value = int((binsize * round(float(total_score.min())/binsize)))
 bins = round((1000 - min_value) / binsize)
-print(min_value, bins)
 
 hist, edges = np.histogram(total_score.dropna(), density=False, bins=bins,
-        range=(min_value, 1000))
+                           range=(min_value, 1000))
 
 # Make a new plot
-output_file("historic_histogram.html")
-
 plot = figure(plot_width=800, plot_height=500, toolbar_location='right',
               title="Formula SAE Michigan Total Score Historic Frequency",
               tools="pan,wheel_zoom,box_zoom,reset,resize")
@@ -44,9 +42,11 @@ freq_bars = plot.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
                       fill_color=Blues9[2], line_color=Blues9[0])
 
 plot.xaxis.axis_label = "Total Score"
+plot.xaxis.minor_tick_line_color = None
 
 plot.yaxis.axis_label = "Frequency"
-plot.y_range = Range1d(0, max(hist))
+plot.yaxis.minor_tick_line_color = None
+plot.y_range = Range1d(0, max(hist.astype(float)))
 
 plot.xgrid.grid_line_color = None
 plot.ygrid.grid_line_color = None
@@ -60,4 +60,4 @@ bar_hover = HoverTool(renderers=[freq_bars], tooltips=[("Range", '@left to @righ
 plot.add_tools(bar_hover)
 
 # Bokeh plotting output
-show(plot)
+curdoc().add_root(plot)

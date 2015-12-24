@@ -55,7 +55,7 @@ def generate_chart(year):
                    stack=cat(columns='event', sort=False),
                    color=color(columns='event', palette=Spectral9, sort=False),
                    xgrid=False, ygrid=False, legend='top_right',
-                   width=1000, height=625,
+                   plot_width=1000, plot_height=625,
                    tools="pan,wheel_zoom,box_zoom,reset,resize")
 
     barchart.title = "Formula SAE Michigan " + str(year) + " Total Scores by Place"

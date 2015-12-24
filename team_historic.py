@@ -33,7 +33,7 @@ plot = figure(plot_width=800, plot_height=500, toolbar_location='right',
               tools="pan,wheel_zoom,box_zoom,reset,resize")
 
 plot.xaxis.axis_label = "Year"
-plot.xaxis.ticker = FixedTicker(ticks=processed_data['Year'].unique())
+plot.xaxis.ticker = FixedTicker(ticks=processed_data['Year'].unique().astype(float))
 
 plot.yaxis.axis_label = "Total Score"
 plot.y_range = Range1d(0, 1000)

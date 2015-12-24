@@ -31,7 +31,10 @@ plot = figure(plot_width=800, plot_height=500, toolbar_location='right',
               tools="pan,wheel_zoom,box_zoom,reset,resize")
 
 plot.xaxis.axis_label = "Place"
+plot.xaxis.minor_tick_line_color = None
+
 plot.yaxis.axis_label = "Total Score"
+plot.yaxis.minor_tick_line_color = None
 
 plot.outline_line_color = None
 

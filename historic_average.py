@@ -3,6 +3,7 @@
 from bokeh.models import Range1d, FixedTicker, HoverTool
 from bokeh.palettes import Blues9
 from bokeh.plotting import figure, show, output_file
+from bokeh.io import curdoc
 
 import numpy as np
 import pandas as pd
@@ -39,9 +40,6 @@ quartile2_y = firstquartile + list(reversed(secondquartile))
 quartile3_y = secondquartile + list(reversed(thirdquartile))
 quartile4_y = thirdquartile + list(reversed(maximum))
 
-# Make a new plot
-output_file("historic_average.html")
-
 plot = figure(plot_width=800, plot_height=500, toolbar_location='right',
               title="Formula SAE Michigan Total Score Historic Average",
               tools="pan,wheel_zoom,box_zoom,reset,resize")
@@ -60,12 +58,14 @@ mean_line = plot.line(x=comp_years, y=mean, line_width=4, line_color=Blues9[0], 
 mean_circle = plot.circle(x=comp_years, y=mean, line_width=2, line_color=Blues9[0], fill_color="white", size=10, legend="Mean")
 
 plot.xaxis.axis_label = "Year"
-plot.xaxis.ticker = FixedTicker(ticks=comp_years)
+plot.xaxis.ticker = FixedTicker(ticks=comp_years.astype(float))
+plot.xaxis.minor_tick_line_color = None
 
 plot.yaxis.axis_label = "Total Score"
+plot.yaxis.minor_tick_line_color = None
 plot.y_range = Range1d(0, 1000)
 
-plot.legend.orientation = 'top_left'
+plot.legend.location = 'top_left'
 
 plot.xgrid.grid_line_color = None
 plot.ygrid.grid_line_color = None
@@ -79,4 +79,4 @@ median_hover = HoverTool(renderers=[median_circle], tooltips=[("Year", '@x'), ("
 plot.add_tools(mean_hover, median_hover)
 
 # Bokeh plotting output
-show(plot)
+curdoc().add_root(plot)
