@@ -1,0 +1,8 @@
+#!/bin/bash
+# The logic to start up your application should be put in this
+# script. The application will work only if it binds to
+# $OPENSHIFT_DIY_IP:8080
+
+cd $OPENSHIFT_REPO_DIR
+plot_files=$(ls *.py)
+bokeh serve $plot_files --host $OPENSHIFT_APP_DNS $OPENSHIFT_PYTHON_PORT:8000 --address $OPENSHIFT_PYTHON_IP --port $OPENSHIFT_PYTHON_PORT
